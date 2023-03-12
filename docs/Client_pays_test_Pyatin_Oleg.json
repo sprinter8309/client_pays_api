@@ -1,0 +1,420 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Client pays API test",
+    "version": "1.0.0",
+    "description": "Description for API test (Pyatin Oleg)",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://client-pays-api.loc/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "client",
+      "description": "Requests for actions with clients"
+    },
+    {
+      "name": "pay",
+      "description": "Requests for actions with pays"
+    }
+  ],
+  "paths": {
+    "/client/list": {
+      "get": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Retrieve all clients",
+        "description": "Retrieving all active clients list",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClientInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/create": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Create new client",
+        "description": "Create new client",
+        "requestBody": {
+          "description": "Params for client record creating",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientCreateData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful creating"
+          },
+          "500": {
+            "description": "Error is occured"
+          }
+        }
+      }
+    },
+    "/client/change-status": {
+      "put": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Change status of client",
+        "description": "Change status of client",
+        "requestBody": {
+          "description": "Params for status changing",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeClientStatusData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful assign"
+          },
+          "500": {
+            "description": "Error is occured"
+          }
+        }
+      }
+    },
+    "/pay/report": {
+      "get": {
+        "tags": [
+          "pay"
+        ],
+        "summary": "Retrieve all pays",
+        "description": "Retrieving all non-cancelled pays list with total sum",
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "description": "filter by ID of client",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 5
+            }
+          },
+          {
+            "name": "client_phone",
+            "in": "query",
+            "description": "filter by phone of client",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": 89994445070
+            }
+          },
+          {
+            "name": "begin_date",
+            "in": "query",
+            "description": "filter by datetime begin date part",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2023-03-01T00:00:00.000Z"
+            }
+          },
+          {
+            "name": "begin_time",
+            "in": "query",
+            "description": "filter by datetime begin time part",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "03:10:54"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "filter by datetime end date part",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2023-03-09T00:00:00.000Z"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "description": "filter by datetime end time part",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "22:30:12"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllPaysInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pay/add": {
+      "post": {
+        "tags": [
+          "pay"
+        ],
+        "summary": "Add new pay",
+        "description": "Add new pay",
+        "requestBody": {
+          "description": "Params for pay add",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/AddPayDataId"
+                  },
+                  {
+                    "$ref": "#/components/schemas/AddPayDataPhone"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful add"
+          },
+          "500": {
+            "description": "Error is occured"
+          }
+        }
+      }
+    },
+    "/pay/cancel": {
+      "put": {
+        "tags": [
+          "pay"
+        ],
+        "summary": "Cancel pay",
+        "description": "Cancel pay (soft delete way)",
+        "requestBody": {
+          "description": "Params for status changing",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelPayData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Car record successfully deleted"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClientInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1,
+            "format": "int32"
+          },
+          "phone": {
+            "type": "string",
+            "example": 89993004050
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Testing Name"
+          },
+          "balance": {
+            "type": "number",
+            "example": 0,
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          }
+        }
+      },
+      "ClientCreateData": {
+        "required": [
+          "phone",
+          "full_name",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": 89993004080
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Testing Name"
+          },
+          "balance": {
+            "type": "number",
+            "example": 0
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          }
+        }
+      },
+      "ChangeClientStatusData": {
+        "required": [
+          "client_id",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "example": "blocked"
+          }
+        }
+      },
+      "AddPayDataId": {
+        "required": [
+          "sum",
+          "client_id"
+        ],
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          },
+          "sum": {
+            "type": "number",
+            "example": 20
+          }
+        }
+      },
+      "AddPayDataPhone": {
+        "required": [
+          "sum",
+          "client_phone"
+        ],
+        "type": "object",
+        "properties": {
+          "client_phone": {
+            "type": "string",
+            "example": 89993004090
+          },
+          "sum": {
+            "type": "number",
+            "example": 20
+          }
+        }
+      },
+      "CancelPayData": {
+        "required": [
+          "cancel_pay_id"
+        ],
+        "type": "object",
+        "properties": {
+          "cancel_pay_id": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          }
+        }
+      },
+      "AllPaysInfo": {
+        "type": "object",
+        "properties": {
+          "paySet": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayInfo"
+            }
+          },
+          "totalSum": {
+            "type": "number",
+            "example": 200.1
+          }
+        }
+      },
+      "PayInfo": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "example": "2023-03-01T12:20:51.000Z"
+          },
+          "client": {
+            "type": "string",
+            "example": "Testing Name"
+          },
+          "sum": {
+            "type": "number",
+            "example": 0,
+            "format": "int32"
+          },
+          "action": {
+            "type": "string",
+            "example": "Оплата"
+          }
+        }
+      }
+    }
+  }
+}
