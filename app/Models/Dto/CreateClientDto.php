@@ -13,4 +13,8 @@ class CreateClientDto extends BaseDto
     public ?int $balance;
     
     public string $status;
+    
+    public ?string $email;       
+        
+    public ?int $age;
 }

@@ -11,7 +11,7 @@ class ClientRepository
 {
     public function getClientList(): Collection
     {
-        return Client::select(['id', 'phone', 'full_name', 'balance', 'status'])
+        return Client::select(['id', 'phone', 'full_name', 'balance', 'status', 'email', 'age'])
                         ->where('status', ClientStatusType::Active)
                         ->get();
     }
